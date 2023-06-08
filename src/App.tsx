@@ -1,48 +1,24 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Button, List, ListItem } from "@mui/material";
 import axios from "axios";
 import { RootState } from "./store/index";
 import { takeTodos, selectTodos, getTodoErrors } from "./features/todos";
-
-const Container = styled(Box)({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const UserKey = styled(Box)({
-  fontSize: "20px",
-  color: "#333333",
-  letterSpacing: "0.2px",
-  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-  minWidth: "100px",
-  backgroundColor: "#F9D5E5",
-  padding: "5px 10px",
-  borderRadius: "10px",
-});
-
-const UserValue = styled(Box)({
-  color: "#FFFFFF",
-  marginLeft: "100px",
-  fontSize: "20px",
-  backgroundColor: "#F15A29",
-  borderRadius: "10px",
-  padding: "5px 10px",
-  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-});
+import { Container, UserKey, UserValue } from "./uiComponents/Component";
 
 function App() {
-  const { todos, selectedTodo, errorCase } = useSelector((state: RootState) => state.todos);
+  const URL = "https://jsonplaceholder.typicode.com/todos";
+
+  const { todos, selectedTodo, errorCase } = useSelector(
+    (state: RootState) => state.todos
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     axios({
       method: "get",
-      url: "https://jsonplaceholder.typicode.com/todos",
+      url: URL,
     })
       .then((res) => {
         dispatch(takeTodos(res.data));
@@ -72,9 +48,9 @@ function App() {
         sx={{
           width: "100%",
           height: "100vh",
-          background: "#F99F53",
+          background: "linear-gradient(to right, #00d2ff, #3a7bd5)",
           backgroundImage: "#53F98B",
-          color: "#53F98B",
+          color: "#203A43",
           fontSize: 50,
           zIndex: 999,
         }}
@@ -113,14 +89,15 @@ function App() {
             padding: "10px",
             overflowY: "scroll",
             borderRadius: "10px",
-            background: "linear-gradient(to right, #c2e59c, #64b3f4)",
+            background: "linear-gradient(to right, #aaffa9, #11ffbd)",
           }}
         >
           {todos.map((todo, index: number) => (
             <ListItem
               sx={{
                 borderBottomStyle: "solid",
-                borderBottomColor: "#F95357",
+                borderBottomColor:
+                  "linear-gradient(to right, #1d976c, #93f9b9)",
                 marginBottom: "1px",
                 padding: 1,
               }}
@@ -145,7 +122,7 @@ function App() {
 
                     cursor: "pointer",
                     color: "#054236",
-                    background: " linear-gradient(to right, #ff9966, #ff5e62)",
+                    background: " linear-gradient(to right, #b3ffab, #12fff7)",
                     transition: "color 0.4s ease-in",
                   },
                 }}
@@ -172,29 +149,29 @@ function App() {
         <Container
           sx={{
             flexDirection: "column",
-            gap: "10px",
+            gap: "50px",
             alignItems: "flex-start",
-            padding: "20px",
+            padding: "50px",
             width: 700,
             height: 400,
-            background: "linear-gradient(to right bottom, #dd3e54, #6be585)",
-            borderRadius: "20px",
+            background: "linear-gradient(to right, #00f260, #0575e6)",
+            borderRadius: "30px",
           }}
         >
           <Container>
-            <UserKey component="div">UserId</UserKey>
+            <UserKey component="div">user id</UserKey>
             <UserValue component="span">{`${selectedTodo?.userId}`}</UserValue>
           </Container>
           <Container>
-            <UserKey component="div">TodoId</UserKey>
+            <UserKey component="div">todo id</UserKey>
             <UserValue component="span">{`${selectedTodo?.id}`}</UserValue>
           </Container>
           <Container>
-            <UserKey component="div">Title</UserKey>
+            <UserKey component="div">title</UserKey>
             <UserValue component="span">{`${selectedTodo?.title}`}</UserValue>
           </Container>
           <Container>
-            <UserKey component="div">Completed</UserKey>
+            <UserKey component="div">completed</UserKey>
             <UserValue component="span">{`${
               selectedTodo?.completed ? "true" : "false"
             }`}</UserValue>
