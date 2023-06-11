@@ -1,54 +1,85 @@
-name: Pre test and built
+name: Build, Test and Deploy
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
-concurrency:
-  group: pre-test-and-build
-
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
 
     steps:
-      - name: Checking branch
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Using node version ${{ matrix.node-version }}
+      - name: Set up Js Environment
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Installing dependencies
+      - name: Install dependencies
         run: npm i
 
-      - name: Running tests
+      - name: Run tests
         run: npm run test
 
-
   build:
-    runs-on: ubuntu-latest
+    name: Build
     needs: test
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
 
     steps:
-      - name: Checking branch
+      - name: Check branch
         uses: actions/checkout@v3
 
-      - name: Using node version ${{ matrix.node-version }}
+      - name: Set up Js Environment
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          
-      - name: Installing dependencies
+
+      - name: Install dependencies
         run: npm i
 
-    
+      - name: Build project
+        run: npm run build
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-files
+          path: ./dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: production-files
+          path: ./dist
+
+      - name: Deploy to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
