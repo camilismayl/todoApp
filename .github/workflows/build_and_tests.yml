@@ -1,4 +1,4 @@
-name: Pre test and build
+name: Pre test and built
 
 on:
   pull_request:
